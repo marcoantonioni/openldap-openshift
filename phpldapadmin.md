@@ -1,6 +1,6 @@
 # PHPADMIN for OpenLDAP in CP4BA
 
-Install php-admin web console
+Install php-admin web console to admin openldap server
 
 ## List available tags for phpldapadmin image
 ```
