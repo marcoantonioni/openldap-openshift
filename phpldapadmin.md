@@ -12,31 +12,34 @@ Review Deployment: certificates
 skopeo list-tags docker://cp.icr.io/cp/cp4a/demo/phpldapadmin
 ```
 
+## Use certs from CP4BA install or use your own
+
+```
+# root ca
+oc get secrets -n cp4ba icp4adeploy-root-ca -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/tls.cert
+oc get secrets -n cp4ba icp4adeploy-root-ca -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/tls.key
+
+# prereq ext
+oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/tls-prereq-ext.cert
+oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/tls-prereq-ext.key
+oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.ldapadminCertChecksum}' > ./certs/tls-prereq-ext.certchecksum
+oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.ldapadminConfChecksum}' > ./certs/tls-prereq-ext.confchecksum
+```
+
+
 ## Installation steps
 ```
 source ./ldap1.properties
 
+#-------------------------------------
+# Create Secrets from CRT/KEY (must have sertificates in ./certs folder)
+oc create secret -n ${TNS} tls phpadminldap-root-ca --cert=./certs/tls.cert --key=./certs/tls.key
+oc create secret -n ${TNS} tls phpadminldap-prereq-ext --cert=./certs/tls-prereq-ext.cert --key=./certs/tls-prereq-ext.key
 
 #-------------------------------------
 # set image name and tag
 PHPLDAPADMIN_IMAGE="cp.icr.io/cp/cp4a/demo/phpldapadmin"
 PHPLDAPADMIN_TAG="0.9.0.1"
-
-#-------------------------------------
-# Build php-admin route
-URL=$(oc get route cpd -n ${TNS} -o jsonpath='{.spec.host}')
-readarray -d . -t URLARR <<< "$URL"
-PARTS=""
-for (( n=0; n < ${#URLARR[*]}; n++))
-do
-  if [[ $n -eq 0 ]]; then
-    PARTS="php-admin"
-  else
-    PARTS=$PARTS".${URLARR[n]}"
-  fi 
-done
-
-export PHP_FQDN=$PARTS
 
 #-------------------------------------
 # 
@@ -56,7 +59,7 @@ data:
   PHPLDAPADMIN_HTTPS_CA_CRT_FILENAME: ca.crt
   PHPLDAPADMIN_HTTPS_CRT_FILENAME: tls.crt
   PHPLDAPADMIN_HTTPS_KEY_FILENAME: tls.key
-  PHPLDAPADMIN_LDAP_HOSTS: icp4adeploy-ldap-service
+  PHPLDAPADMIN_LDAP_HOSTS: ${LDAP_DOMAIN}-ldap
 EOF
 
 #-------------------------------------
@@ -146,11 +149,11 @@ spec:
           emptyDir: {}
         - name: rootcasecret
           secret:
-            secretName: icp4adeploy-root-ca
+            secretName: phpadminldap-root-ca
             defaultMode: 420
         - name: tlssecret
           secret:
-            secretName: icp4adeploy-prereq-ext-tls-secret
+            secretName: phpadminldap-prereq-ext
             defaultMode: 420
       dnsPolicy: ClusterFirst
   strategy:
@@ -178,6 +181,29 @@ spec:
       port: 443
       targetPort: 443
 EOF
+
+# create temp route
+oc expose service -n ${TNS} php-admin
+
+#-------------------------------------
+# Build php-admin route
+URL=$(oc get route -n ${TNS} php-admin -o jsonpath='{.spec.host}')
+readarray -d . -t URLARR <<< "$URL"
+PARTS=""
+for (( n=0; n < ${#URLARR[*]}; n++))
+do
+  if [[ $n -eq 0 ]]; then
+    PARTS="php-admin-"${TNS}
+  else
+    PARTS=$PARTS".${URLARR[n]}"
+  fi 
+done
+
+export PHP_FQDN=$PARTS
+echo "php-admin host: "${PHP_FQDN}
+
+# delete temp route
+oc delete route -n ${TNS} php-admin
 
 #-------------------------------------
 # 
