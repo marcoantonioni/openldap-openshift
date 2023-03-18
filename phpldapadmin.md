@@ -1,11 +1,6 @@
 # PHPADMIN for OpenLDAP in CP4BA
 
-
-## TBD
-
-Review ConfigMap: cert and LDAP service
-Review Deployment: certificates
-
+Install php-admin web console
 
 ## List available tags for phpldapadmin image
 ```
@@ -22,10 +17,7 @@ oc get secrets -n cp4ba icp4adeploy-root-ca -o jsonpath='{.data.tls\.key}' | bas
 # prereq ext
 oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/tls-prereq-ext.cert
 oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/tls-prereq-ext.key
-oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.ldapadminCertChecksum}' > ./certs/tls-prereq-ext.certchecksum
-oc get secrets -n cp4ba icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.ldapadminConfChecksum}' > ./certs/tls-prereq-ext.confchecksum
 ```
-
 
 ## Installation steps
 ```
