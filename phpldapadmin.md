@@ -1,11 +1,30 @@
-# PHPADMIN - OpenLDAP
+# PHPADMIN for OpenLDAP in CP4BA
 
-To be refined...
 
+## TBD
+
+Review ConfigMap: cert and LDAP service
+Review Deployment: certificates
+
+
+## List available tags for phpldapadmin image
 ```
-export CP4BA_AUTO_NAMESPACE="cp4ba"
+skopeo list-tags docker://cp.icr.io/cp/cp4a/demo/phpldapadmin
+```
 
-URL=$(oc get route cpd -n ${CP4BA_AUTO_NAMESPACE} -o jsonpath='{.spec.host}')
+## Installation steps
+```
+source ./ldap1.properties
+
+
+#-------------------------------------
+# set image name and tag
+PHPLDAPADMIN_IMAGE="cp.icr.io/cp/cp4a/demo/phpldapadmin"
+PHPLDAPADMIN_TAG="0.9.0.1"
+
+#-------------------------------------
+# Build php-admin route
+URL=$(oc get route cpd -n ${TNS} -o jsonpath='{.spec.host}')
 readarray -d . -t URLARR <<< "$URL"
 PARTS=""
 for (( n=0; n < ${#URLARR[*]}; n++))
@@ -17,15 +36,16 @@ do
   fi 
 done
 
-# "https://"
 export PHP_FQDN=$PARTS
 
-cat <<EOF | oc apply -n ${CP4BA_AUTO_NAMESPACE} -f -
+#-------------------------------------
+# 
+cat <<EOF | oc apply -n ${TNS} -f -
 kind: ConfigMap
 apiVersion: v1
 metadata:
   name: php-admin-cm
-  namespace: ${CP4BA_AUTO_NAMESPACE}
+  namespace: ${TNS}
   labels:
     app: phpldapadmin
     chart: phpldapadmin-0.1.3
@@ -37,12 +57,16 @@ data:
   PHPLDAPADMIN_HTTPS_CRT_FILENAME: tls.crt
   PHPLDAPADMIN_HTTPS_KEY_FILENAME: tls.key
   PHPLDAPADMIN_LDAP_HOSTS: icp4adeploy-ldap-service
----
+EOF
+
+#-------------------------------------
+# 
+cat <<EOF | oc apply -n ${TNS} -f -
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: icp4adeploy-phpldapadmin
-  namespace: ${CP4BA_AUTO_NAMESPACE}
+  name: phpldapadmin
+  namespace: ${TNS}
   labels:
     app: phpldapadmin
     chart: phpldapadmin-0.1.3
@@ -64,7 +88,7 @@ spec:
       restartPolicy: Always
       initContainers:
         - name: phpldapadmin-init-certs
-          image: 'cp.icr.io/cp/cp4a/demo/phpldapadmin:0.9.0.1'
+          image: '${PHPLDAPADMIN_IMAGE}:${PHPLDAPADMIN_TAG}'
           command:
             - /bin/sh
             - '-ec'
@@ -113,7 +137,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: php-admin-cm
-          image: 'cp.icr.io/cp/cp4a/demo/phpldapadmin:0.9.0.1'
+          image: '${PHPLDAPADMIN_IMAGE}:${PHPLDAPADMIN_TAG}'
           args:
             - '--copy-service'
       serviceAccount: ibm-cp4ba-anyuid
@@ -136,12 +160,16 @@ spec:
       maxSurge: 25%
   revisionHistoryLimit: 10
   progressDeadlineSeconds: 600
----
+EOF
+
+#-------------------------------------
+# 
+cat <<EOF | oc apply -n ${TNS} -f -
 apiVersion: v1
 kind: Service
 metadata:
   name: php-admin
-  namespace: ${CP4BA_AUTO_NAMESPACE}
+  namespace: ${TNS}
 spec:
   selector:
     app: phpldapadmin
@@ -149,12 +177,16 @@ spec:
     - protocol: TCP
       port: 443
       targetPort: 443
----
+EOF
+
+#-------------------------------------
+# 
+cat <<EOF | oc apply -n ${TNS} -f -
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: php-admin
-  namespace: ${CP4BA_AUTO_NAMESPACE}
+  namespace: ${TNS}
 spec:
   host: >-
     ${PHP_FQDN}
@@ -171,13 +203,10 @@ spec:
 EOF
 
 #-----------------------------------------
-# credenziali admin per console php-admin per amministrazione OpenLDAP
-# user: cn=admin,dc=example,dc=org
-# estrarre password con comando
-oc -n ${CP4BA_AUTO_NAMESPACE} get secret icp4adeploy-openldap-secret -o jsonpath='{.data.LDAP_ADMIN_PASSWORD}' | base64 -d | xargs echo "password: "
+# php-admin access credentials
 
-#-----------------------------------------
-# contenuto file LDIF (okkio al punto nel nome, usare escape \)
-oc -n ${CP4BA_AUTO_NAMESPACE} get secret icp4adeploy-openldap-customldif -o jsonpath='{.data.ldap_user\.ldif}' | base64 -d
+PHPADMIN_USER="cn=admin,dc=${LDAP_DOMAIN},dc=org"
+PHPADMIN_PASSWORD=$(oc -n ${TNS} get secret ${LDAP_DOMAIN}-secret -o jsonpath='{.data.LDAP_ADMIN_PASSWORD}' | base64 -d)
 
+echo "php-amin user[${PHPADMIN_USER}] password[${PHPADMIN_PASSWORD}]"
 ```
