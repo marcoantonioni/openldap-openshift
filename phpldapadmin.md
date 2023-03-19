@@ -4,6 +4,7 @@ Install php-admin web console to admin openldap server
 
 ## List available tags for phpldapadmin image
 ```
+podman login -u cp -p ${CP4BA_AUTO_ENTITLEMENT_KEY} cp.icr.io
 skopeo list-tags docker://cp.icr.io/cp/cp4a/demo/phpldapadmin
 ```
 
