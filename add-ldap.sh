@@ -90,7 +90,7 @@ createNamespace() {
 createSecrets() {
   oc create secret generic -n ${TNS} ${LDAP_DOMAIN}-secret --from-literal=LDAP_ADMIN_PASSWORD=passw0rd --from-literal=LDAP_CONFIG_PASSWORD=passw0rd
   oc create secret generic -n ${TNS} ${LDAP_DOMAIN}-customldif --from-file=ldap_user.ldif=${LDAP_LDIF_NAME}
-
+  # oc get secret -n -n ${TNS} ${LDAP_DOMAIN}-customldif -o jsonpath='{.data.ldap_user\.ldif}' | base64 -d
 }
 
 #-------------------------------
