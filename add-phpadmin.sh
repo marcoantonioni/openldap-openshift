@@ -1,41 +1,52 @@
-# PHPADMIN for OpenLDAP in CP4BA
+#!/bin/bash
 
-Install php-admin web console to admin openldap server
+#-------------------------------
+# read installation parameters
+PROPS_FILE="./ldap.properties"
 
-## List available tags for phpldapadmin image
-```
-podman login -u cp -p ${CP4BA_AUTO_ENTITLEMENT_KEY} cp.icr.io
-skopeo list-tags docker://cp.icr.io/cp/cp4a/demo/phpldapadmin
-```
+CP4BANS=cp4ba
+CHECK_PARAMS=false
+while getopts p:n:c flag
+do
+    case "${flag}" in
+        c) CHECK_PARAMS=true;;
+        p) PROPS_FILE=${OPTARG};;
+        n) CP4BANS=${OPTARG};;
+    esac
+done
 
-## Use certs from CP4BA install or use your own
+if [[ -z ${PROPS_FILE}"" ]];
+then
+    # load default props file
+    PROPS_FILE="./ldap.properties"
+    echo "Sourcing default properties file "
+    source ${PROPS_FILE}
+else
+    if [[ -f ${PROPS_FILE} ]];
+    then
+        echo "Sourcing properties file "${PROPS_FILE}
+        source ${PROPS_FILE}
+    else
+        echo "ERROR: Properties file "${PROPS_FILE}" not found !!!"
+        exit
+    fi
+fi
 
-```
-source ./...your-cfg.properties
+#-------------------------------
 
-# root ca
-oc get secrets -n ${TNS} icp4adeploy-root-ca -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/tls.cert
-oc get secrets -n ${TNS} icp4adeploy-root-ca -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/tls.key
+extractCreateSecretsTls () {
+oc get secrets -n ${CP4BANS} icp4adeploy-root-ca -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/tls.cert
+oc get secrets -n ${CP4BANS} icp4adeploy-root-ca -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/tls.key
 
-# ???? prereq ext
-# oc get secrets -n ${TNS} icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/tls-prereq-ext.cert
-# oc get secrets -n ${TNS} icp4adeploy-prereq-ext-tls-secret -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/tls-prereq-ext.key
+oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/common-web-ui-cert.cert
+oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/common-web-ui-cert.key
 
-oc get secrets -n ${TNS} common-web-ui-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/common-web-ui-cert.cert
-oc get secrets -n ${TNS} common-web-ui-cert -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/common-web-ui-cert.key
-
-```
-
-## Installation steps
-```
-source ./ldap1.properties
-source ./vux-cfg1.properties
-
-#-------------------------------------
-# Create Secrets from CRT/KEY (must have sertificates in ./certs folder)
 oc create secret -n ${TNS} tls phpadminldap-root-ca --cert=./certs/tls.cert --key=./certs/tls.key
 oc create secret -n ${TNS} tls phpadminldap-prereq-ext --cert=./certs/common-web-ui-cert.cert --key=./certs/common-web-ui-cert.key
 
+}
+
+deployPHPAdmin () {
 #-------------------------------------
 # set image name and tag
 PHPLDAPADMIN_IMAGE="cp.icr.io/cp/cp4a/demo/phpldapadmin"
@@ -228,11 +239,12 @@ spec:
   wildcardPolicy: None
 EOF
 
-#-----------------------------------------
-# php-admin access credentials
+}
+
+extractCreateSecretsTls
+deployPHPAdmin
 
 PHPADMIN_USER="cn=admin,dc=${LDAP_DOMAIN},dc=org"
 PHPADMIN_PASSWORD=$(oc -n ${TNS} get secret ${LDAP_DOMAIN}-secret -o jsonpath='{.data.LDAP_ADMIN_PASSWORD}' | base64 -d)
 
 echo "php-amin user[${PHPADMIN_USER}] password[${PHPADMIN_PASSWORD}]"
-```

@@ -13,21 +13,24 @@ File 'ldap.properties' references ldif file
 ## Pak Configuration
 
 ```
-name: customdomain1
+Connection name: vuxdomain1
+Server type: Custom
+  LDAP authentication
 
-type: Custom
+Set the parameters for authenticating with your LDAP server.
+Base DN: dc=vuxdomain,dc=org
+Bind DN: cn=admin,dc=vuxdomain,dc=org
+Bind DN password: passw0rd
+LDAP server
+URL: ldap://vuxdomain-ldap.a-vux-cfg1.svc.cluster.local:389
 
-DN: dc=customdomain1,dc=org
+Filters
 
-BIND: cn=admin,dc=customdomain1,dc=org
+LDAP filters are configured by default. Enter any custom filters that you require.
+Group filter:         (&(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))
+User filter:          (&(cn=%v)(objectclass=person))
+Group ID map:         *:cn
+User ID map:          *:uid
+Group member ID map:  memberof:member
 
-Password: passw0rd
-
-URL ldap://customdomain1-ldap.test-ldap1.svc.cluster.local:389
-
-Group filter          (&(cn=%v)(objectclass=groupOfNames))
-User filter           (&(uid=%v)(objectclass=person))
-Group ID map          *:cn
-User ID map           *:uid
-Group member ID map   groupOfNames:member
 ```
