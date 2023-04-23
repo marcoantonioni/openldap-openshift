@@ -346,4 +346,13 @@ createDeployment
 
 waitForDeploymentReady ${TNS} ${LDAP_DOMAIN}-ldap ${WAIT_SECS}
 
+
+LDAP_SVC_NAME=$(oc get services -n ${TNS} | grep ${LDAP_DOMAIN} | awk '{print $1}')
+echo "Your LDAP service url is '"${LDAP_SVC_NAME}.${TNS}.svc.cluster.local"'"
+echo "LDAP service ports"
+oc get service -n ${TNS} ${LDAP_SVC_NAME} -o yaml | grep port:
+echo "Possible full address (ports may vary)"
+echo "  ldap://${LDAP_SVC_NAME}.${TNS}.svc.cluster.local:389"
+echo "  ldaps://${LDAP_SVC_NAME}.${TNS}.svc.cluster.local:636"
+
 echo "LDAP installed."
