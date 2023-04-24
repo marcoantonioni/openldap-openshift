@@ -1,8 +1,8 @@
 { 
   "LDAP_ID": "vuxdomain", 
   "LDAP_URL": "ldap://vuxdomain-ldap.a-vux-cfg1.svc.cluster.local:389", 
-  "LDAP_BASEDN": "dc=vuxdomain,dc=org", 
-  "LDAP_BINDDN": "cn=admin,dc=vuxdomain,dc=org",  
+  "LDAP_BASEDN": "dc=vuxdomain,dc=net", 
+  "LDAP_BINDDN": "cn=admin,dc=vuxdomain,dc=net",  
   "LDAP_BINDPASSWORD": "cGFzc3cwcmQ=", 
   "LDAP_TYPE": "Custom", 
   "LDAP_USERFILTER": "(&(cn=%v)(objectclass=person))", 
@@ -10,7 +10,7 @@
   "LDAP_USERIDMAP": "*:uid", 
   "LDAP_GROUPIDMAP": "*:cn", 
   "LDAP_GROUPMEMBERIDMAP": "memberof:member",
-  "LDAP_GROUP_SEARCHBASE_LIST": ["[dc=vuxdomain,dc=org]"],  
+  "LDAP_GROUP_SEARCHBASE_LIST": ["['dc=vuxdomain,dc=net']"],  
   "LDAP_PAGINGSEARCH": "true",
   "LDAP_PAGING_SIZE": "1000" 
 }

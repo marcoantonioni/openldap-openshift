@@ -244,7 +244,7 @@ EOF
 extractCreateSecretsTls
 deployPHPAdmin
 
-PHPADMIN_USER="cn=admin,dc=${LDAP_DOMAIN},dc=org"
+PHPADMIN_USER="cn=admin,${LDAP_FULL_DOMAIN}"
 PHPADMIN_PASSWORD=$(oc -n ${TNS} get secret ${LDAP_DOMAIN}-secret -o jsonpath='{.data.LDAP_ADMIN_PASSWORD}' | base64 -d)
 
 echo "php-amin user[${PHPADMIN_USER}] password[${PHPADMIN_PASSWORD}]"
