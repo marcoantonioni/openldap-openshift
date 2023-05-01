@@ -64,6 +64,7 @@ if [[ "${RESPONSE}" == *"error"* ]]; then
   echo -e "ERROR configuring [${IDP_NAME}]\n${RESPONSE}"
 else
   echo "IDP [${IDP_NAME}] configured, id [${RESPONSE}]"
+  echo "Pak admin / ${ADMIN_PASSW}"
 fi
 
 }

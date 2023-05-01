@@ -211,7 +211,7 @@ do
 done
 
 export PHP_FQDN=$PARTS
-echo "php-admin host: "${PHP_FQDN}
+echo "php-admin host: https://"${PHP_FQDN}
 
 # delete temp route
 oc delete route -n ${TNS} php-admin
