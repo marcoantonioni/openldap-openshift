@@ -16,6 +16,8 @@ File 'idp.properties' references an LDAP service
 1. Update file ./idp.properties
 2. Run ./add-idp.sh -p ./idp.properties
 
+Note: reboot BAW pods to get LDAP groups visibles (e.g. ProcessAdmin -> Group Management) 
+
 ## Examples
 
 ```
