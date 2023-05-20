@@ -1503,6 +1503,7 @@ mail: vuxuser100@vuxdomain.net
 dn: cn=VUXAllUsers-vuxdomain,dc=vuxdomain,dc=net
 objectClass: groupOfNames
 objectClass: top
+cn: VUXAllUsers-vuxdomain
 member: uid=vuxuser1,dc=vuxdomain,dc=net
 member: uid=vuxuser2,dc=vuxdomain,dc=net
 member: uid=vuxuser3,dc=vuxdomain,dc=net
@@ -1607,6 +1608,7 @@ member: uid=vuxuser100,dc=vuxdomain,dc=net
 dn: cn=VUXGroup1,dc=vuxdomain,dc=net
 objectClass: groupOfNames
 objectClass: top
+cn: VUXGroup1
 member: uid=vuxuser1,dc=vuxdomain,dc=net
 member: uid=vuxuser2,dc=vuxdomain,dc=net
 member: uid=vuxuser3,dc=vuxdomain,dc=net
@@ -1661,6 +1663,7 @@ member: uid=vuxuser50,dc=vuxdomain,dc=net
 dn: cn=VUXGroup2,dc=vuxdomain,dc=net
 objectClass: groupOfNames
 objectClass: top
+cn: VUXGroup2
 member: uid=vuxuser52,dc=vuxdomain,dc=net
 member: uid=vuxuser53,dc=vuxdomain,dc=net
 member: uid=vuxuser54,dc=vuxdomain,dc=net
@@ -1714,6 +1717,7 @@ member: uid=vuxuser100,dc=vuxdomain,dc=net
 dn: cn=VUXGroup3,dc=vuxdomain,dc=net
 objectClass: groupOfNames
 objectClass: top
+cn: VUXGroup3
 member: uid=vuxuser41,dc=vuxdomain,dc=net
 member: uid=vuxuser42,dc=vuxdomain,dc=net
 member: uid=vuxuser43,dc=vuxdomain,dc=net
@@ -1774,4 +1778,3 @@ member: uid=vuxuser97,dc=vuxdomain,dc=net
 member: uid=vuxuser98,dc=vuxdomain,dc=net
 member: uid=vuxuser99,dc=vuxdomain,dc=net
 member: uid=vuxuser100,dc=vuxdomain,dc=net
-
