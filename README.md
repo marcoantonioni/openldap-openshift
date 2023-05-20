@@ -19,9 +19,16 @@ File 'idp.properties' references an LDAP service
 ## Examples
 
 ```
+# cfg1
 ./add-ldap.sh -p vux-cfg1.properties
 ./add-phpadmin.sh -p ./vux-cfg1.properties -n cp4ba
 ./add-idp.sh -p ./idp1.properties
+
+# cfg2
+./add-ldap.sh -p vux-cfg2.properties
+./add-phpadmin.sh -p ./vux-cfg2.properties -n cp4ba
+./add-idp.sh -p ./idp2.properties
+
 ```
 
 ### OpenLDAP parameters
