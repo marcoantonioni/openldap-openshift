@@ -65,6 +65,7 @@ RESPONSE=$(curl -sk -X POST "${CONSOLE_HOST}/idmgmt/identity/api/v1/directory/ld
             -H "Authorization: Bearer ${IAM_ACCESS_TK}" -H 'Content-Type: application/json' -d @./${IDP_NAME}.json | jq .)
 if [[ "${RESPONSE}" == *"error"* ]]; then
   echo -e "ERROR configuring [${IDP_NAME}]\n${RESPONSE}"
+  exit
 else
   echo "IDP [${IDP_NAME}] configured, id [${RESPONSE}]"
   echo "Pak admin / ${ADMIN_PASSW}"
@@ -74,7 +75,33 @@ fi
 
 #-------------------------------
 
+configSCIM () {
+
+ADMIN_NAME=admin
+ADMIN_PASSW=$(oc get secret platform-auth-idp-credentials -n ${TNS} -o jsonpath='{.data.admin_password}' | base64 -d)
+CONSOLE_HOST=https://$(oc get route -n ${TNS} cp-console -o jsonpath="{.spec.host}")
+IAM_ACCESS_TK=$(curl -sk -X POST -H "Content-Type: application/x-www-form-urlencoded;charset=UTF-8" \
+    -d "grant_type=password&username=${ADMIN_NAME}&password=${ADMIN_PASSW}&scope=openid" \
+    ${CONSOLE_HOST}/idprovider/v1/auth/identitytoken | jq -r .access_token)
+
+SCIM_DATA='{"idp_id":"'${IDP_NAME}'","idp_type":"ldap","user":{"id":"dn","userName":"uid","principalName":"uid","displayName":"cn","givenName":"cn","familyName":"sn","fullName":"cn","externalId":"dn","phoneNumbers":[{"value":"mobile","type":"mobile"},{"value":"telephoneNumber","type":"work"}],"objectClass":"person","groups":"memberOf"},"group":{"id":"dn","name":"cn","principalName":"cn","displayName":"cn","externalId":"dn","created":"createTimestamp","lastModified":"modifyTimestamp","objectClass":"groupOfNames","members":"member"}}'
+
+RESPONSE=$(curl -sk -X POST -H "Authorization: Bearer ${IAM_ACCESS_TK}" -H 'Content-Type: application/json' \
+    -d $SCIM_DATA "${CONSOLE_HOST}/idmgmt/identity/api/v1/scim/attributemappings" | jq .)
+if [[ "${RESPONSE}" == *"error"* ]]; then
+  echo "ERROR configuring SCIM attributes for [${IDP_NAME}]"
+  echo "${RESPONSE}"
+  exit
+else
+  echo "SCIM attributes for IDP [${IDP_NAME}] configured"
+  echo "${RESPONSE}"
+fi
+
+}
+
+#-------------------------------
+
 echo "Configuring IDP ["${IDP_NAME}"]"
 
 createIdp
-
+configSCIM
