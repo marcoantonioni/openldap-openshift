@@ -17,6 +17,27 @@ TBD
 - rivedere contenuto configurazioni e riallineare domain ldif
 - preparare set configurazioni per wfps
 
+# configurazioni esempio
+# dominio: vuxdomain1, ldif: dc=vuxdomain1,dc=net
+# idp name: vuxdomain1
+_cfg1-ldap-domain.ldif
+_cfg1-ldap-domain.properties
+_cfg1-idp.properties
+
+./add-ldap.sh -p ./_cfg1-ldap-domain.properties
+./add-idp-v4.sh -p ./_cfg1-idp.properties
+TNS=cp4ba-wfps-runtime2
+./add-phpadmin.sh -p ./_cfg1-ldap-domain.properties -n ${TNS} -s icp4adeploy-for-wfps-root-ca
+
+_cfg2-ldap-domain.ldif
+_cfg2-ldap-domain.properties
+_cfg2-idp.properties
+
+./add-ldap.sh -p ./_cfg2-ldap-domain.properties
+./add-idp-v4.sh -p ./_cfg2-idp.properties
+TNS=cp4ba-wfps-runtime2
+./add-phpadmin.sh -p ./_cfg2-ldap-domain.properties -n ${TNS} -s icp4adeploy-for-wfps-root-ca
+
 ```
 
 
