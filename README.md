@@ -8,6 +8,10 @@ Use -v4.sh scripts for Foundational services v4.x
 ./add-idp-v4.sh -p ./idp1-v4.properties
 ./add-phpadmin.sh -p ./vux-cfg-wfps1.properties -n cp4ba-wfps-runtime -s icp4adeploy-for-wfps-root-ca
 
+./add-ldap.sh -p ./vux-cfg-wfps2.properties
+./add-idp-v4.sh -p ./idp2-v4.properties
+./add-phpadmin.sh -p ./vux-cfg-wfps2.properties -n cp4ba-wfps-runtime -s icp4adeploy-for-wfps-root-ca
+
 
 TBD
 - rivedere contenuto configurazioni e riallineare domain ldif

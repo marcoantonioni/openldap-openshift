@@ -1,0 +1,26 @@
+{
+  "name": "vux2domain",
+  "description": "",
+  "protocol": "ldap",
+  "type": "Custom",
+  "idp_config": {
+        "ldap_id": "vux2domain",
+        "ldap_realm": "REALM",
+        "ldap_url": "ldap://vux2domain-ldap.cp4ba-wfps-runtime.svc.cluster.local:389",
+        "ldap_host": "vux2domain-ldap.cp4ba-wfps-runtime.svc.cluster.local",
+        "ldap_port": "389",
+        "ldap_protocol": "ldap",
+        "ldap_basedn": "dc=vux2domain,dc=net",
+        "ldap_binddn": "cn=admin,dc=vux2domain,dc=net",
+        "ldap_bindpassword": "cGFzc3cwcmQ=",
+        "ldap_type": "Custom",
+        "ldap_ignorecase": "true",
+        "ldap_userfilter": "(&(cn=%v)(objectclass=person))",
+        "ldap_useridmap": "*:uid",
+        "ldap_groupfilter": "(&(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))",
+        "ldap_groupidmap": "*:uid",
+        "ldap_groupmemberidmap": "memberof:member",
+        "ldap_nestedsearch": "false",
+        "ldap_pagingsearch": "false"
+        }
+}

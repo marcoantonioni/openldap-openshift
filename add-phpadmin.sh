@@ -34,7 +34,6 @@ else
 fi
 
 #-------------------------------
-# icp4adeploy-for-wfps-root-ca
 extractCreateSecretsTls () {
 oc get secrets -n ${CP4BANS} ${SECRET_NAME} -o jsonpath='{.data.tls\.crt}' | base64 -d > ./tls.cert
 oc get secrets -n ${CP4BANS} ${SECRET_NAME} -o jsonpath='{.data.tls\.key}' | base64 -d > ./tls.key
@@ -42,8 +41,8 @@ oc get secrets -n ${CP4BANS} ${SECRET_NAME} -o jsonpath='{.data.tls\.key}' | bas
 oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > ./common-web-ui-cert.cert
 oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.key}' | base64 -d > ./common-web-ui-cert.key
 
-oc create secret -n ${TNS} tls phpadminldap-root-ca --cert=./tls.cert --key=./tls.key
-oc create secret -n ${TNS} tls phpadminldap-prereq-ext --cert=./common-web-ui-cert.cert --key=./common-web-ui-cert.key
+oc create secret -n ${TNS} tls phpadminldap-${LDAP_DOMAIN}-root-ca --cert=./tls.cert --key=./tls.key
+oc create secret -n ${TNS} tls phpadminldap-${LDAP_DOMAIN}-prereq-ext --cert=./common-web-ui-cert.cert --key=./common-web-ui-cert.key
 
 }
 
@@ -59,7 +58,7 @@ cat <<EOF | oc apply -n ${TNS} -f -
 kind: ConfigMap
 apiVersion: v1
 metadata:
-  name: php-admin-cm
+  name: php-admin-${LDAP_DOMAIN}-cm
   namespace: ${TNS}
   labels:
     app: phpldapadmin
@@ -80,10 +79,10 @@ cat <<EOF | oc apply -n ${TNS} -f -
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: phpldapadmin
+  name: phpldapadmin-${LDAP_DOMAIN}
   namespace: ${TNS}
   labels:
-    app: phpldapadmin
+    app: phpldapadmin-${LDAP_DOMAIN}
     chart: phpldapadmin-0.1.3
     heritage: Tiller
     release: phpldapadmin
@@ -91,13 +90,13 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: phpldapadmin
+      app: phpldapadmin-${LDAP_DOMAIN}
       release: phpldapadmin
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: phpldapadmin
+        app: phpldapadmin-${LDAP_DOMAIN}
         release: phpldapadmin
     spec:
       restartPolicy: Always
@@ -151,7 +150,7 @@ spec:
           terminationMessagePolicy: File
           envFrom:
             - configMapRef:
-                name: php-admin-cm
+                name: php-admin-${LDAP_DOMAIN}-cm
           image: '${PHPLDAPADMIN_IMAGE}:${PHPLDAPADMIN_TAG}'
           args:
             - '--copy-service'
@@ -161,11 +160,11 @@ spec:
           emptyDir: {}
         - name: rootcasecret
           secret:
-            secretName: phpadminldap-root-ca
+            secretName: phpadminldap-${LDAP_DOMAIN}-root-ca
             defaultMode: 420
         - name: tlssecret
           secret:
-            secretName: phpadminldap-prereq-ext
+            secretName: phpadminldap-${LDAP_DOMAIN}-prereq-ext
             defaultMode: 420
       dnsPolicy: ClusterFirst
   strategy:
@@ -183,11 +182,11 @@ cat <<EOF | oc apply -n ${TNS} -f -
 apiVersion: v1
 kind: Service
 metadata:
-  name: php-admin
+  name: php-admin-${LDAP_DOMAIN}
   namespace: ${TNS}
 spec:
   selector:
-    app: phpldapadmin
+    app: phpldapadmin-${LDAP_DOMAIN}
   ports:
     - protocol: TCP
       port: 443
@@ -195,17 +194,17 @@ spec:
 EOF
 
 # create temp route
-oc expose service -n ${TNS} php-admin
+oc expose service -n ${TNS} php-admin-${LDAP_DOMAIN}
 
 #-------------------------------------
 # Build php-admin route
-URL=$(oc get route -n ${TNS} php-admin -o jsonpath='{.spec.host}')
+URL=$(oc get route -n ${TNS} php-admin-${LDAP_DOMAIN} -o jsonpath='{.spec.host}')
 readarray -d . -t URLARR <<< "$URL"
 PARTS=""
 for (( n=0; n < ${#URLARR[*]}; n++))
 do
   if [[ $n -eq 0 ]]; then
-    PARTS="php-admin-"${TNS}
+    PARTS="php-admin-${LDAP_DOMAIN}-"${TNS}
   else
     PARTS=$PARTS".${URLARR[n]}"
   fi 
@@ -215,7 +214,7 @@ export PHP_FQDN=$PARTS
 echo "php-admin host: https://"${PHP_FQDN}
 
 # delete temp route
-oc delete route -n ${TNS} php-admin
+oc delete route -n ${TNS} php-admin-${LDAP_DOMAIN}
 
 #-------------------------------------
 # 
@@ -223,14 +222,14 @@ cat <<EOF | oc apply -n ${TNS} -f -
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
-  name: php-admin
+  name: php-admin-${LDAP_DOMAIN}
   namespace: ${TNS}
 spec:
   host: >-
     ${PHP_FQDN}
   to:
     kind: Service
-    name: php-admin
+    name: php-admin-${LDAP_DOMAIN}
     weight: 100
   port:
     targetPort: 443
