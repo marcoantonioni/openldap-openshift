@@ -6,12 +6,13 @@ PROPS_FILE="./ldap.properties"
 
 CP4BANS=cp4ba
 CHECK_PARAMS=false
-while getopts p:n:c flag
+while getopts p:n:s:c flag
 do
     case "${flag}" in
         c) CHECK_PARAMS=true;;
         p) PROPS_FILE=${OPTARG};;
         n) CP4BANS=${OPTARG};;
+        s) SECRET_NAME=${OPTARG};;
     esac
 done
 
@@ -33,16 +34,16 @@ else
 fi
 
 #-------------------------------
-
+# icp4adeploy-for-wfps-root-ca
 extractCreateSecretsTls () {
-oc get secrets -n ${CP4BANS} icp4adeploy-root-ca -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/tls.cert
-oc get secrets -n ${CP4BANS} icp4adeploy-root-ca -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/tls.key
+oc get secrets -n ${CP4BANS} ${SECRET_NAME} -o jsonpath='{.data.tls\.crt}' | base64 -d > ./tls.cert
+oc get secrets -n ${CP4BANS} ${SECRET_NAME} -o jsonpath='{.data.tls\.key}' | base64 -d > ./tls.key
 
-oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > ./certs/common-web-ui-cert.cert
-oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.key}' | base64 -d > ./certs/common-web-ui-cert.key
+oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.crt}' | base64 -d > ./common-web-ui-cert.cert
+oc get secrets -n ${CP4BANS} common-web-ui-cert -o jsonpath='{.data.tls\.key}' | base64 -d > ./common-web-ui-cert.key
 
-oc create secret -n ${TNS} tls phpadminldap-root-ca --cert=./certs/tls.cert --key=./certs/tls.key
-oc create secret -n ${TNS} tls phpadminldap-prereq-ext --cert=./certs/common-web-ui-cert.cert --key=./certs/common-web-ui-cert.key
+oc create secret -n ${TNS} tls phpadminldap-root-ca --cert=./tls.cert --key=./tls.key
+oc create secret -n ${TNS} tls phpadminldap-prereq-ext --cert=./common-web-ui-cert.cert --key=./common-web-ui-cert.key
 
 }
 

@@ -1,13 +1,13 @@
 {
-  "name": "vuxdomain",
+  "name": "vuxdomain1",
   "description": "",
   "protocol": "ldap",
   "type": "Custom",
   "idp_config": {
-        "ldap_id": "vuxdomain",
+        "ldap_id": "vuxdomain1",
         "ldap_realm": "REALM",
-        "ldap_url": "ldap://vuxdomain-ldap.cp4ba-wfps-runtime.svc.cluster.local:389",
-        "ldap_host": "vuxdomain-ldap.cp4ba-wfps-runtime.svc.cluster.local",
+        "ldap_url": "ldap://vuxdomain1-ldap.cp4ba-wfps-runtime.svc.cluster.local:389",
+        "ldap_host": "vuxdomain1-ldap.cp4ba-wfps-runtime.svc.cluster.local",
         "ldap_port": "389",
         "ldap_protocol": "ldap",
         "ldap_basedn": "dc=vuxdomain,dc=net",
