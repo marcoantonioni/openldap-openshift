@@ -67,13 +67,8 @@ IAM_ACCESS_TK=$(curl -sk -X POST -H "Content-Type: application/x-www-form-urlenc
     -d "grant_type=password&username=${ADMIN_NAME}&password=${ADMIN_PASSW}&scope=openid" \
     ${CONSOLE_HOST}/idprovider/v1/auth/identitytoken | jq -r .access_token)
 
-# RESPONSE=$(curl -sk -X POST "${CONSOLE_HOST}/idmgmt/identity/api/v1/directory/ldap/onboardDirectory" \
-#             -H "Authorization: Bearer ${IAM_ACCESS_TK}" -H 'Content-Type: application/json' -d @./${IDP_NAME}.json | jq .)
-
 RESPONSE=$(curl -sk -X POST "${CONSOLE_HOST}/idprovider/v3/auth/idsource" \
             -H "Authorization: Bearer ${IAM_ACCESS_TK}" -H 'Content-Type: application/json' -d @./${IDP_NAME}.json | jq .)
-
-echo "***RESPONSE: "${RESPONSE}
 
 if [[ "${RESPONSE}" == *"error"* ]]; then
   echo -e "ERROR configuring [${IDP_NAME}]\n${RESPONSE}"
@@ -82,6 +77,11 @@ else
   echo "IDP [${IDP_NAME}] configured, id [${RESPONSE}]"
   echo "Pak admin / ${ADMIN_PASSW}"
 fi
+
+# lista IDP
+echo ""
+echo "IDP items:"
+curl -sk -X GET "${CONSOLE_HOST}/idprovider/v3/auth/idsource" -H "Authorization: Bearer ${IAM_ACCESS_TK}" | jq .
 
 }
 
@@ -115,4 +115,4 @@ fi
 echo "Configuring IDP ["${IDP_NAME}"]"
 
 createIdp
-# configSCIM
+configSCIM

@@ -2,7 +2,7 @@
 
 ```
 Updated Dec 2023
-Use -v4.sh scripts for Foundational services v4.x
+Use '...-v4.sh' scripts for Foundational services v4.x
 
 ./add-ldap.sh -p ./vux-cfg-wfps1.properties
 ./add-idp-v4.sh -p ./idp1-v4.properties
@@ -17,7 +17,7 @@ TBD
 - rivedere contenuto configurazioni e riallineare domain ldif
 - preparare set configurazioni per wfps
 
-# configurazioni esempio
+# configurazioni esempio v4.x
 # dominio: vuxdomain1, ldif: dc=vuxdomain1,dc=net
 # idp name: vuxdomain1
 _cfg1-ldap-domain.ldif
@@ -25,10 +25,11 @@ _cfg1-ldap-domain.properties
 _cfg1-idp.properties
 
 ./add-ldap.sh -p ./_cfg1-ldap-domain.properties
-./add-idp-v4.sh -p ./_cfg1-idp.properties
 
-TNS=cp4ba-wfps-runtime2
+TNS=cp4ba-wfps-runtime3
 ./add-phpadmin.sh -p ./_cfg1-ldap-domain.properties -n ${TNS} -s icp4adeploy-for-wfps-root-ca
+
+./add-idp-v4.sh -p ./_cfg1-idp.properties
 
 #----------------------
 _cfg2-ldap-domain.ldif
@@ -36,10 +37,11 @@ _cfg2-ldap-domain.properties
 _cfg2-idp.properties
 
 ./add-ldap.sh -p ./_cfg2-ldap-domain.properties
-./add-idp-v4.sh -p ./_cfg2-idp.properties
 
-TNS=cp4ba-wfps-runtime2
+TNS=cp4ba-wfps-runtime3
 ./add-phpadmin.sh -p ./_cfg2-ldap-domain.properties -n ${TNS} -s icp4adeploy-for-wfps-root-ca
+
+./add-idp-v4.sh -p ./_cfg2-idp.properties
 
 ```
 
