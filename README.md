@@ -1,50 +1,76 @@
 # openldap-openshift
 
-```
+
 Updated Dec 2023
+
 Use '...-v4.sh' scripts for Foundational services v4.x
-
-./add-ldap.sh -p ./vux-cfg-wfps1.properties
-./add-idp-v4.sh -p ./idp1-v4.properties
-./add-phpadmin.sh -p ./vux-cfg-wfps1.properties -n cp4ba-wfps-runtime -s icp4adeploy-for-wfps-root-ca
-
-./add-ldap.sh -p ./vux-cfg-wfps2.properties
-./add-idp-v4.sh -p ./idp2-v4.properties
-./add-phpadmin.sh -p ./vux-cfg-wfps2.properties -n cp4ba-wfps-runtime -s icp4adeploy-for-wfps-root-ca
 
 
 TBD
+
 - rivedere contenuto configurazioni e riallineare domain ldif
+
 - preparare set configurazioni per wfps
 
-# configurazioni esempio v4.x
-# dominio: vuxdomain1, ldif: dc=vuxdomain1,dc=net
-# idp name: vuxdomain1
-_cfg1-ldap-domain.ldif
-_cfg1-ldap-domain.properties
-_cfg1-idp.properties
 
+## cfg1 - 10 users
+```
+# install openldap deployment and wait for pod ready
 ./add-ldap.sh -p ./_cfg1-ldap-domain.properties
 
+# [optional] install phpadmin tool
 TNS=cp4ba-wfps-runtime3
 ./add-phpadmin.sh -p ./_cfg1-ldap-domain.properties -n ${TNS} -s icp4adeploy-for-wfps-root-ca
 
+# install idp configuration
 ./add-idp-v4.sh -p ./_cfg1-idp.properties
+```
 
-#----------------------
-_cfg2-ldap-domain.ldif
-_cfg2-ldap-domain.properties
-_cfg2-idp.properties
-
+## cfg2 - 10 users
+```
+# install openldap deployment and wait for pod ready
 ./add-ldap.sh -p ./_cfg2-ldap-domain.properties
 
+# [optional] install phpadmin tool
 TNS=cp4ba-wfps-runtime3
 ./add-phpadmin.sh -p ./_cfg2-ldap-domain.properties -n ${TNS} -s icp4adeploy-for-wfps-root-ca
 
+# install idp configuration
 ./add-idp-v4.sh -p ./_cfg2-idp.properties
+```
+
+
+## cfg1 - 100 users
+```
+# install openldap deployment and wait for pod ready
+./add-ldap.sh -p ./vux-cfg-wfps1.properties
+
+# [optional] install phpadmin tool
+./add-phpadmin.sh -p ./vux-cfg-wfps1.properties -n cp4ba-wfps-runtime -s icp4adeploy-for-wfps-root-ca
+
+# install idp configuration
+./add-idp-v4.sh -p ./idp1-v4.properties
+```
+
+
+## cfg2 - 100 users
+```
+# install openldap deployment and wait for pod ready
+./add-ldap.sh -p ./vux-cfg-wfps2.properties
+
+# [optional] install phpadmin tool
+./add-phpadmin.sh -p ./vux-cfg-wfps2.properties -n cp4ba-wfps-runtime -s icp4adeploy-for-wfps-root-ca
+
+# install idp configuration
+./add-idp-v4.sh -p ./idp2-v4.properties
 
 ```
 
+
+=======================================================
+
+
+## DEPRECATED use of following v3.x commands
 
 ## Add an LDAP service
 File 'ldap.properties' references ldif file
