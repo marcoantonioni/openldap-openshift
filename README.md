@@ -6,12 +6,6 @@ Updated Dec 2023
 Use '...-v4.sh' scripts for Foundational services v4.x
 
 
-TBD
-
-- rivedere contenuto configurazioni e riallineare domain ldif
-
-- preparare set configurazioni per wfps
-
 
 ## cfg1 - 10 users
 ```
