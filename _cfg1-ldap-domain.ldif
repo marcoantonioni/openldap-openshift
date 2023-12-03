@@ -4,7 +4,7 @@ dn: uid=vuxuser1dom1,dc=vuxdomain1,dc=net
 uid: vuxuser1dom1
 cn: vuxuser1dom1
 sn: vuxuser1dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -19,7 +19,7 @@ dn: uid=vuxuser2dom1,dc=vuxdomain1,dc=net
 uid: vuxuser2dom1
 cn: vuxuser2dom1
 sn: vuxuser2dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -34,7 +34,7 @@ dn: uid=vuxuser3dom1,dc=vuxdomain1,dc=net
 uid: vuxuser3dom1
 cn: vuxuser3dom1
 sn: vuxuser3dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -49,7 +49,7 @@ dn: uid=vuxuser4dom1,dc=vuxdomain1,dc=net
 uid: vuxuser4dom1
 cn: vuxuser4dom1
 sn: vuxuser4dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -64,7 +64,7 @@ dn: uid=vuxuser5dom1,dc=vuxdomain1,dc=net
 uid: vuxuser5dom1
 cn: vuxuser5dom1
 sn: vuxuser5dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -79,7 +79,7 @@ dn: uid=vuxuser6dom1,dc=vuxdomain1,dc=net
 uid: vuxuser6dom1
 cn: vuxuser6dom1
 sn: vuxuser6dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -94,7 +94,7 @@ dn: uid=vuxuser7dom1,dc=vuxdomain1,dc=net
 uid: vuxuser7dom1
 cn: vuxuser7dom1
 sn: vuxuser7dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -109,7 +109,7 @@ dn: uid=vuxuser8dom1,dc=vuxdomain1,dc=net
 uid: vuxuser8dom1
 cn: vuxuser8dom1
 sn: vuxuser8dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -124,7 +124,7 @@ dn: uid=vuxuser9dom1,dc=vuxdomain1,dc=net
 uid: vuxuser9dom1
 cn: vuxuser9dom1
 sn: vuxuser9dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
@@ -139,7 +139,7 @@ dn: uid=vuxuser10dom1,dc=vuxdomain1,dc=net
 uid: vuxuser10dom1
 cn: vuxuser10dom1
 sn: vuxuser10dom1
-userpassword: vuxPassw0rd
+userpassword: dem0s
 objectClass: top
 objectClass: posixAccount
 objectClass: organizationalPerson
