@@ -6,7 +6,6 @@ Updated Dec 2023
 Use '...-v4.sh' scripts for Foundational services v4.x
 
 
-
 ## cfg1 - 10 users
 ```
 # install openldap deployment and wait for pod ready
