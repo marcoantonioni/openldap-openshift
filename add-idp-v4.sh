@@ -29,7 +29,7 @@ getCommonValues () {
 
   # get IAM access token
   IAM_ACCESS_TK=$(curl -sk -X POST -H "Content-Type: application/x-www-form-urlencoded;charset=UTF-8" \
-      -d "grant_type=password&username=${ADMIN_NAME}&password=${ADMIN_PASSW}&scope=openid" \
+      -d "grant_type=password&username=${ADMIN_USERNAME}&password=${ADMIN_PASSW}&scope=openid" \
       ${CONSOLE_HOST}/idprovider/v1/auth/identitytoken | jq -r .access_token)
 
   echo "Pak console: "${CONSOLE_HOST}
@@ -75,12 +75,6 @@ echo '{
 # Add SCIM attributes
 
 configSCIM () {
-
-  #ADMIN_PASSW=$(oc get secret platform-auth-idp-credentials -n ${TNS} -o jsonpath='{.data.admin_password}' | base64 -d)
-  #CONSOLE_HOST=https://$(oc get route -n ${TNS} cp-console -o jsonpath="{.spec.host}")
-  #IAM_ACCESS_TK=$(curl -sk -X POST -H "Content-Type: application/x-www-form-urlencoded;charset=UTF-8" \
-  #                  -d "grant_type=password&username=${ADMIN_NAME}&password=${ADMIN_PASSW}&scope=openid" \
-  #                  ${CONSOLE_HOST}/idprovider/v1/auth/identitytoken | jq -r .access_token)
 
   SCIM_DATA='{"idp_id":"'${IDP_NAME}'","idp_type":"ldap","user":{"id":"dn","userName":"uid","principalName":"uid","displayName":"cn","givenName":"cn","familyName":"sn","fullName":"cn","externalId":"dn","phoneNumbers":[{"value":"mobile","type":"mobile"},{"value":"telephoneNumber","type":"work"}],"objectClass":"person","groups":"memberOf"},"group":{"id":"dn","name":"cn","principalName":"cn","displayName":"cn","externalId":"dn","created":"createTimestamp","lastModified":"modifyTimestamp","objectClass":"groupOfNames","members":"member"}}'
 

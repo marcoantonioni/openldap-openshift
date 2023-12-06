@@ -1,5 +1,6 @@
 # openldap-openshift
 
+<b><u>DEPRECATED</u></b> repository for Cloud Pak with Common services v3.x, see 'cp4ba-idp-ldap' for new versions
 
 Updated Dec 2023
 
